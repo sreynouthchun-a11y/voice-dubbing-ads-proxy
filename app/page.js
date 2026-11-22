@@ -1,12 +1,52 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function Home() {
   const [script, setScript] = useState('')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState(null)
   const [error, setError] = useState('')
+
+  // Hide Hugging Face header on mount
+  useEffect(() => {
+    const hideHFHeader = () => {
+      // Try multiple selectors to hide HF header
+      const selectors = [
+        '[data-testid="space-header"]',
+        '.space-header',
+        'header',
+        '[class*="header"]',
+        '[class*="navbar"]',
+        '[class*="topbar"]'
+      ]
+      
+      selectors.forEach(selector => {
+        const elements = document.querySelectorAll(selector)
+        elements.forEach(el => {
+          if (el.offsetHeight > 50 && el.offsetHeight < 200) {
+            el.style.display = 'none'
+          }
+        })
+      })
+      
+      // Also hide any "huggingface.co" or "hf.space" text in header area
+      const allElements = document.querySelectorAll('*')
+      allElements.forEach(el => {
+        const text = el.textContent || ''
+        if ((text.includes('huggingface.co') || text.includes('hf.space')) && el.offsetHeight < 100) {
+          el.style.display = 'none'
+        }
+      })
+    }
+    
+    hideHFHeader()
+    
+    // Also set up interval to keep hiding if HF re-renders
+    const interval = setInterval(hideHFHeader, 2000)
+    
+    return () => clearInterval(interval)
+  }, [])
 
   const handleDubbing = async (voiceType) => {
     if (!script.trim()) {
@@ -48,7 +88,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center p-4 font-sans">
-      {/* Header */}
+      {/* Custom Header - Replaces HF Header */}
       <div className="w-full max-w-md bg-gradient-to-r from-blue-600 to-blue-500 rounded-2xl p-6 shadow-lg text-white mb-6">
         <div className="flex items-center gap-3 mb-2">
           <div className="bg-white/20 p-2 rounded-lg">
