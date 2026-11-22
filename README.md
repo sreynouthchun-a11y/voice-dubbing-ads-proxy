@@ -10,7 +10,7 @@ High-Speed Khmer Dubbing (Up to 10+ Mins)
 - 🔒 Hides Hugging Face backend URL
 
 ## Tech Stack
-- React + Vite
+- Next.js 14
 - Tailwind CSS
 - Vercel Serverless Functions (Proxy)
 
